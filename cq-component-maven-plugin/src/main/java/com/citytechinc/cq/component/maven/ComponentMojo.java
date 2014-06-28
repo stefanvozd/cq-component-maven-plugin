@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.citytechinc.cq.component.graniteuidialog.widget.GraniteUIWidgetRegistry;
 import javassist.ClassPool;
 import javassist.CtClass;
 
@@ -68,6 +69,9 @@ public class ComponentMojo extends AbstractMojo {
 	@Parameter(required = false)
 	private List<Dependency> excludeDependencies;
 
+    @Parameter(defaultValue = "false")
+    private boolean generateGraniteDialogs;
+
 	public void execute() throws MojoExecutionException, MojoFailureException {
 
 		LogSingleton.getInstance().setLogger(getLog());
@@ -88,6 +92,8 @@ public class ComponentMojo extends AbstractMojo {
 
 			WidgetRegistry widgetRegistry = new DefaultWidgetRegistry(classPool, classLoader, reflections);
 
+            GraniteUIWidgetRegistry graniteWidgetRegistry = new DefaultGraniteUIWidgetRegistry(classPool, classLoader, reflections);
+
 			Map<String, ComponentNameTransformer> transformers = ComponentMojoUtil.getAllTransformers(classPool,
 				reflections);
 
@@ -97,7 +103,7 @@ public class ComponentMojo extends AbstractMojo {
 				throw new ConfigurationException("The configured transformer wasn't found");
 			}
 
-			ComponentMojoUtil.buildArchiveFileForProjectAndClassList(classList, widgetRegistry, classLoader, classPool,
+			ComponentMojoUtil.buildArchiveFileForProjectAndClassList(classList, widgetRegistry, graniteWidgetRegistry, classLoader, classPool,
 				new File(project.getBuild().getDirectory()), componentPathBase, componentPathSuffix,
 				defaultComponentGroup, getArchiveFileForProject(), getTempArchiveFileForProject(), transformer);
 

@@ -22,6 +22,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import com.citytechinc.cq.component.graniteuidialog.GraniteUIDialog;
+import com.citytechinc.cq.component.graniteuidialog.exception.GraniteUIDialogCreationException;
+import com.citytechinc.cq.component.graniteuidialog.factory.GraniteUIDialogFactory;
+import com.citytechinc.cq.component.graniteuidialog.widget.GraniteUIWidgetRegistry;
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -80,6 +84,17 @@ public class DialogUtil {
 
 	}
 
+    public static File writeGraniteUIDialogToFile(ComponentNameTransformer transformer, GraniteUIDialog dialog, CtClass componentClass,
+                                         File buildDirectory, String componentPathBase, String defaultComponentPathSuffix)
+            throws OutputFailureException, IOException, ParserConfigurationException, TransformerException,
+            ClassNotFoundException, IllegalArgumentException, SecurityException, IllegalAccessException,
+            InvocationTargetException, NoSuchMethodException {
+
+        return ComponentMojoUtil.writeElementToFile(transformer, dialog, componentClass, buildDirectory,
+                componentPathBase, defaultComponentPathSuffix, dialog.getFileName());
+
+    }
+
 	/**
 	 * Writes a provided dialog file to a provided archive output stream at a
 	 * path determined by the class of the component.
@@ -102,37 +117,43 @@ public class DialogUtil {
 			reservedNames, componentPathBase, defaultComponentPathSuffix, "/" + dialogFile.getName());
 	}
 
-	/**
-	 * Constructs a list of Dialog objects based on Classes annotated by
-	 * Component annotations. Scans the provided list of classes constructing a
-	 * Dialog object for each one annotated with the Component annotation. Any
-	 * classes provided in the class list which are not thusly annotated are
-	 * ignored.
-	 * 
-	 * @param classList
-	 * @param zipOutputStream
-	 * @param reservedNames
-	 * @param xtypeMap
-	 * @param classLoader
-	 * @param classPool
-	 * @return A list of constructed Dialog objects
-	 * @throws InvalidComponentClassException
-	 * @throws InvalidComponentFieldException
-	 * @throws OutputFailureException
-	 * @throws IOException
-	 * @throws ParserConfigurationException
-	 * @throws TransformerException
-	 * @throws ClassNotFoundException
-	 * @throws CannotCompileException
-	 * @throws NotFoundException
-	 * @throws SecurityException
-	 * @throws NoSuchFieldException
-	 * @throws IllegalArgumentException
-	 * @throws IllegalAccessException
-	 * @throws InvocationTargetException
-	 * @throws NoSuchMethodException
-	 * @throws InstantiationException
-	 */
+
+    /**
+     *
+     * Constructs a list of Dialog objects based on Classes annotated by
+     * Component annotations. Scans the provided list of classes constructing a
+     * Dialog object for each one annotated with the Component annotation. Any
+     * classes provided in the class list which are not thusly annotated are
+     * ignored.
+     *
+     * @param transformer
+     * @param classList
+     * @param zipOutputStream
+     * @param reservedNames
+     * @param widgetRegistry
+     * @param classLoader
+     * @param classPool
+     * @param buildDirectory
+     * @param componentPathBase
+     * @param defaultComponentPathSuffix
+     * @return
+     * @throws InvalidComponentClassException
+     * @throws InvalidComponentFieldException
+     * @throws OutputFailureException
+     * @throws IOException
+     * @throws ParserConfigurationException
+     * @throws TransformerException
+     * @throws ClassNotFoundException
+     * @throws CannotCompileException
+     * @throws NotFoundException
+     * @throws SecurityException
+     * @throws NoSuchFieldException
+     * @throws IllegalArgumentException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws NoSuchMethodException
+     * @throws InstantiationException
+     */
 	public static List<Dialog> buildDialogsFromClassList(ComponentNameTransformer transformer, List<CtClass> classList,
 		ZipArchiveOutputStream zipOutputStream, Set<String> reservedNames, WidgetRegistry widgetRegistry,
 		ClassLoader classLoader, ClassPool classPool, File buildDirectory, String componentPathBase,
@@ -185,5 +206,60 @@ public class DialogUtil {
 		return dialogList;
 
 	}
+
+    public static List<GraniteUIDialog> buildGraniteUIDialogsFromClassList(
+            ComponentNameTransformer transformer,
+            List<CtClass> classList,
+            ZipArchiveOutputStream zipOutputStream,
+            Set<String> reservedNames,
+            GraniteUIWidgetRegistry widgetRegistry,
+            ClassLoader classLoader,
+            ClassPool classPool,
+            File buildDirectory,
+            String componentPathBase,
+            String defaultComponentPathSuffix) throws GraniteUIDialogCreationException {
+
+        final List<GraniteUIDialog> dialogList = new ArrayList<GraniteUIDialog>();
+
+        for (CtClass curClass : classList) {
+            ComponentMojoUtil.getLog().debug("Checking class for Component annotation " + curClass);
+
+            boolean hasDialogFieldOrCQIncludeTab = false;
+
+            try {
+                for (CtField curField : ComponentMojoUtil.collectFields(curClass)) {
+                    if (curField.hasAnnotation(DialogField.class)) {
+                        hasDialogFieldOrCQIncludeTab = true;
+                        break;
+                    }
+                }
+
+                if (!hasDialogFieldOrCQIncludeTab) {
+                    for (CtMethod curMethod : ComponentMojoUtil.collectMethods(curClass)) {
+                        if (curMethod.hasAnnotation(DialogField.class)) {
+                            hasDialogFieldOrCQIncludeTab = true;
+                            break;
+                        }
+                    }
+                }
+                if (hasDialogFieldOrCQIncludeTab) {
+                    ComponentMojoUtil.getLog().debug("Producing GraniteUI Dialog for class " + curClass);
+                    GraniteUIDialog builtDialog = GraniteUIDialogFactory.make(curClass, widgetRegistry, classLoader, classPool);
+                    dialogList.add(builtDialog);
+                    File dialogFile = writeGraniteUIDialogToFile(transformer, builtDialog, curClass, buildDirectory,
+                            componentPathBase, defaultComponentPathSuffix);
+                    writeDialogToArchiveFile(transformer, dialogFile, curClass, zipOutputStream, reservedNames,
+                            componentPathBase, defaultComponentPathSuffix);
+                }
+
+            } catch (Exception e) {
+                ComponentMojoUtil.getLog().error("Exception encountered processing Granite UI dialogs", e);
+                throw new GraniteUIDialogCreationException(e);
+            }
+        }
+
+        return dialogList;
+
+    }
 
 }

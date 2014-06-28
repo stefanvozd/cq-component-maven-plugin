@@ -32,6 +32,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.citytechinc.cq.component.annotations.config.GraniteUIContainer;
+import com.citytechinc.cq.component.annotations.config.GraniteUIWidget;
+import com.citytechinc.cq.component.graniteuidialog.container.AbstractGraniteUIContainer;
+import com.citytechinc.cq.component.graniteuidialog.maker.GraniteUIContainerMaker;
+import com.citytechinc.cq.component.graniteuidialog.widget.AbstractGraniteUIWidget;
+import com.citytechinc.cq.component.graniteuidialog.exception.GraniteUIDialogCreationException;
+import com.citytechinc.cq.component.graniteuidialog.widget.GraniteUIWidgetRegistry;
+import com.citytechinc.cq.component.util.GraniteUIContainerConfigHolder;
+import com.citytechinc.cq.component.util.GraniteUIWidgetConfigHolder;
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -111,10 +120,7 @@ public class ComponentMojoUtil {
 	/**
 	 * Constructs as Javassist ClassPool which pulls resources based on the
 	 * paths provided by the passed in ClassLoader
-	 * 
-	 * @param classLoader
-	 * @return The constructed ClassPool
-	 * @throws NotFoundException
+	 *
 	 */
 	public static ClassPool getClassPool(ClassLoader loader) {
 		ClassPool classPool = new ClassLoaderClassPool(loader);
@@ -153,42 +159,16 @@ public class ComponentMojoUtil {
 	 * Add files to the already constructed Archive file by creating a new
 	 * Archive file, appending the contents of the existing Archive file to it,
 	 * and then adding additional entries for the newly constructed artifacts.
-	 * 
-	 * @param classList
-	 * @param xtypeMap
-	 * @param classLoader
-	 * @param classPool
-	 * @param buildDirectory
-	 * @param componentPathBase
-	 * @param defaultComponentPathSuffix
-	 * @param defaultComponentGroup
-	 * @param existingArchiveFile
-	 * @param tempArchiveFile
-	 * @throws OutputFailureException
-	 * @throws IOException
-	 * @throws InvalidComponentClassException
-	 * @throws InvalidComponentFieldException
-	 * @throws ParserConfigurationException
-	 * @throws TransformerException
-	 * @throws ClassNotFoundException
-	 * @throws CannotCompileException
-	 * @throws NotFoundException
-	 * @throws SecurityException
-	 * @throws NoSuchFieldException
-	 * @throws IllegalArgumentException
-	 * @throws IllegalAccessException
-	 * @throws InvocationTargetException
-	 * @throws NoSuchMethodException
-	 * @throws InstantiationException
+	 *
 	 */
-	public static void buildArchiveFileForProjectAndClassList(List<CtClass> classList, WidgetRegistry widgetRegistry,
+	public static void buildArchiveFileForProjectAndClassList(List<CtClass> classList, WidgetRegistry widgetRegistry, GraniteUIWidgetRegistry graniteUIWidgetRegistry,
 		ClassLoader classLoader, ClassPool classPool, File buildDirectory, String componentPathBase,
 		String defaultComponentPathSuffix, String defaultComponentGroup, File existingArchiveFile,
 		File tempArchiveFile, ComponentNameTransformer transformer) throws OutputFailureException, IOException,
-		InvalidComponentClassException, InvalidComponentFieldException, ParserConfigurationException,
-		TransformerException, ClassNotFoundException, CannotCompileException, NotFoundException, SecurityException,
-		NoSuchFieldException, IllegalArgumentException, IllegalAccessException, InvocationTargetException,
-		NoSuchMethodException, InstantiationException {
+            InvalidComponentClassException, InvalidComponentFieldException, ParserConfigurationException,
+            TransformerException, ClassNotFoundException, CannotCompileException, NotFoundException, SecurityException,
+            NoSuchFieldException, IllegalArgumentException, IllegalAccessException, InvocationTargetException,
+            NoSuchMethodException, InstantiationException, GraniteUIDialogCreationException {
 
 		if (!existingArchiveFile.exists()) {
 			throw new OutputFailureException("Archive file does not exist");
@@ -238,6 +218,18 @@ public class ComponentMojoUtil {
 		 */
 		DialogUtil.buildDialogsFromClassList(transformer, classList, tempOutputStream, existingArchiveEntryNames,
 			widgetRegistry, classLoader, classPool, buildDirectory, componentPathBase, defaultComponentPathSuffix);
+
+        DialogUtil.buildGraniteUIDialogsFromClassList(
+                transformer,
+                classList,
+                tempOutputStream,
+                existingArchiveEntryNames,
+                graniteUIWidgetRegistry,
+                classLoader,
+                classPool,
+                buildDirectory,
+                componentPathBase,
+                defaultComponentPathSuffix);
 
 		/*
 		 * Create edit config within temp archive
@@ -294,13 +286,7 @@ public class ComponentMojoUtil {
 	/**
 	 * Determine the appropriate output directory for a component's artifacts
 	 * based on the component class as well as POM configuration.
-	 * 
-	 * @param componentClass
-	 * @param project
-	 * @param componentPathBase
-	 * @return The determined output directory
-	 * @throws OutputFailureException
-	 * @throws ClassNotFoundException
+	 *
 	 */
 	public static File getOutputDirectoryForComponentClass(ComponentNameTransformer transformer,
 		CtClass componentClass, File buildDirectory, String componentPathBase, String defaultComponentPathSuffix)
@@ -444,6 +430,62 @@ public class ComponentMojoUtil {
 		}
 		return builtInWidgets;
 	}
+
+    /**
+     * Constructs a list of widget configurations based on the information
+     * provided by classes annotated as Widgets.
+     *
+     * @param classPool
+     * @param classLoader
+     * @param reflections
+     * @return The constructed widget configurations
+     * @throws ClassNotFoundException
+     * @throws NotFoundException
+     * @throws MalformedURLException
+     */
+    public static List<GraniteUIWidgetConfigHolder> getAllGraniteUIWidgetAnnotations(ClassPool classPool, ClassLoader classLoader,
+                                                                   Reflections reflections) throws ClassNotFoundException, NotFoundException, MalformedURLException {
+        List<GraniteUIWidgetConfigHolder> builtInWidgets = new ArrayList<GraniteUIWidgetConfigHolder>();
+
+        for (Class<?> c : reflections.getTypesAnnotatedWith(GraniteUIWidget.class)) {
+            CtClass clazz = classPool.getCtClass(c.getName());
+            GraniteUIWidget widgetAnnotation = (GraniteUIWidget) clazz.getAnnotation(GraniteUIWidget.class);
+
+            Class<? extends Annotation> annotationClass = widgetAnnotation.annotationClass();
+
+            Class<? extends WidgetMaker> makerClass = widgetAnnotation.makerClass();
+            Class<? extends AbstractGraniteUIWidget> widgetClass = classLoader.loadClass(clazz.getName()).asSubclass(
+                    AbstractGraniteUIWidget.class);
+            GraniteUIWidgetConfigHolder widgetConfig = new GraniteUIWidgetConfigHolder(annotationClass, widgetClass, makerClass,
+                    widgetAnnotation.resourceType(), widgetAnnotation.ranking());
+
+            builtInWidgets.add(widgetConfig);
+
+        }
+        return builtInWidgets;
+    }
+
+    public static List<GraniteUIContainerConfigHolder> getAllGraniteUIContainerAnnotations(ClassPool classPool, ClassLoader classLoader,
+                                                                                     Reflections reflections) throws ClassNotFoundException, NotFoundException, MalformedURLException {
+        List<GraniteUIContainerConfigHolder> builtInContainers = new ArrayList<GraniteUIContainerConfigHolder>();
+
+        for (Class<?> c : reflections.getTypesAnnotatedWith(GraniteUIContainer.class)) {
+            CtClass clazz = classPool.getCtClass(c.getName());
+            GraniteUIContainer containerAnnotation = (GraniteUIContainer) clazz.getAnnotation(GraniteUIContainer.class);
+
+            Class<? extends Annotation> annotationClass = containerAnnotation.annotationClass();
+
+            Class<? extends GraniteUIContainerMaker> makerClass = containerAnnotation.makerClass();
+            Class<? extends AbstractGraniteUIContainer> containerClass = classLoader.loadClass(clazz.getName()).asSubclass(
+                    AbstractGraniteUIContainer.class);
+            GraniteUIContainerConfigHolder containerConfig = new GraniteUIContainerConfigHolder(annotationClass, containerClass, makerClass,
+                    containerAnnotation.resourceType());
+
+            builtInContainers.add(containerConfig);
+
+        }
+        return builtInContainers;
+    }
 
 	/**
 	 * Retrieves a List of all classes which are annotated as Components and are
