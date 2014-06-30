@@ -13,20 +13,23 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package com.citytechinc.cq.component.graniteuidialog;
+package com.citytechinc.cq.component.graniteuidialog.layout.impl.fixedcolumns;
 
-import com.citytechinc.cq.component.xml.XmlElementParameters;
+import com.citytechinc.cq.component.graniteuidialog.layout.AbstractGraniteUILayout;
 
-public class GraniteUIResourceTypedElementParameters extends XmlElementParameters {
+public class FixedColumnsLayout extends AbstractGraniteUILayout {
 
-    protected String resourceType;
+    public static final String RESOURCE_TYPE = "granite/ui/components/foundation/layouts/fixedcolumns";
 
-    public String getResourceType() {
-        return resourceType;
+    private final boolean margin;
+
+    public FixedColumnsLayout(FixedColumnsLayoutParameters parameters) {
+        super(parameters);
+
+        this.margin = parameters.isMargin();
     }
 
-    public void setResourceType(String resourceType) {
-        this.resourceType = resourceType;
+    public boolean isMargin() {
+        return margin;
     }
-
 }

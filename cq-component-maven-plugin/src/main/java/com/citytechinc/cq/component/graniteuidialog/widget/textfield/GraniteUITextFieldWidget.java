@@ -13,20 +13,17 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package com.citytechinc.cq.component.graniteuidialog;
+package com.citytechinc.cq.component.graniteuidialog.widget.textfield;
 
-import com.citytechinc.cq.component.xml.XmlElementParameters;
+import com.citytechinc.cq.component.graniteuidialog.widget.AbstractGraniteUIWidget;
+import com.citytechinc.cq.component.graniteuidialog.widget.GraniteUIWidgetParameters;
 
-public class GraniteUIResourceTypedElementParameters extends XmlElementParameters {
+public class GraniteUITextFieldWidget extends AbstractGraniteUIWidget {
 
-    protected String resourceType;
+    public static final String RESOURCE_TYPE = "granite/ui/components/foundation/form/textfield";
 
-    public String getResourceType() {
-        return resourceType;
-    }
-
-    public void setResourceType(String resourceType) {
-        this.resourceType = resourceType;
+    public GraniteUITextFieldWidget(GraniteUIWidgetParameters parameters) {
+        super(parameters);
     }
 
 }

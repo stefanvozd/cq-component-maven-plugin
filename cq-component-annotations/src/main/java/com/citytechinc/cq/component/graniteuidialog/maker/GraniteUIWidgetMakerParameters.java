@@ -1,8 +1,24 @@
+/**
+ *    Copyright 2013 CITYTECH, Inc.
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
 package com.citytechinc.cq.component.graniteuidialog.maker;
 
 import com.citytechinc.cq.component.annotations.DialogField;
 import com.citytechinc.cq.component.dialog.exception.InvalidComponentFieldException;
 import com.citytechinc.cq.component.dialog.widget.WidgetRegistry;
+import com.citytechinc.cq.component.graniteuidialog.container.GraniteUIContainerRegistry;
 import com.citytechinc.cq.component.graniteuidialog.widget.GraniteUIWidgetRegistry;
 import javassist.ClassPool;
 import javassist.CtMember;
@@ -16,6 +32,7 @@ public class GraniteUIWidgetMakerParameters {
     private ClassLoader classLoader;
     private ClassPool classPool;
     private GraniteUIWidgetRegistry widgetRegistry;
+    private GraniteUIContainerRegistry containerRegistry;
     private String resourceType;
     private boolean useDotSlashInName;
 
@@ -39,6 +56,7 @@ public class GraniteUIWidgetMakerParameters {
             ClassLoader classLoader,
             ClassPool classPool,
             GraniteUIWidgetRegistry widgetRegistry,
+            GraniteUIContainerRegistry containerRegistry,
             String resourceType,
             boolean useDotSlashInName) throws InvalidComponentFieldException, NotFoundException {
 
@@ -48,6 +66,7 @@ public class GraniteUIWidgetMakerParameters {
         this.classLoader = classLoader;
         this.classPool = classPool;
         this.widgetRegistry = widgetRegistry;
+        this.containerRegistry = containerRegistry;
         this.resourceType = resourceType;
         this.useDotSlashInName = useDotSlashInName;
     }
@@ -180,4 +199,11 @@ public class GraniteUIWidgetMakerParameters {
         this.useDotSlashInName = useDotSlashInName;
     }
 
+    public GraniteUIContainerRegistry getContainerRegistry() {
+        return containerRegistry;
+    }
+
+    public void setContainerRegistry(GraniteUIContainerRegistry containerRegistry) {
+        this.containerRegistry = containerRegistry;
+    }
 }

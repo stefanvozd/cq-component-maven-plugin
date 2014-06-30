@@ -199,6 +199,13 @@ public @interface Component {
 	 */
 	String fileName() default "dialog";
 
+    /**
+     * TODO: Document
+     *
+     * @return String
+     */
+    String graniteFileName() default "_cq_dialog";
+
 	/**
 	 * Indicates whether a _cq_editConfig file should be generated for the component defined by the
 	 * annotated Java Class.  When set to false, a _cq_editConfig file will not be generated regardless of

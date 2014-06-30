@@ -35,7 +35,9 @@ import java.util.Set;
 import com.citytechinc.cq.component.annotations.config.GraniteUIContainer;
 import com.citytechinc.cq.component.annotations.config.GraniteUIWidget;
 import com.citytechinc.cq.component.graniteuidialog.container.AbstractGraniteUIContainer;
+import com.citytechinc.cq.component.graniteuidialog.container.GraniteUIContainerRegistry;
 import com.citytechinc.cq.component.graniteuidialog.maker.GraniteUIContainerMaker;
+import com.citytechinc.cq.component.graniteuidialog.maker.GraniteUIWidgetMaker;
 import com.citytechinc.cq.component.graniteuidialog.widget.AbstractGraniteUIWidget;
 import com.citytechinc.cq.component.graniteuidialog.exception.GraniteUIDialogCreationException;
 import com.citytechinc.cq.component.graniteuidialog.widget.GraniteUIWidgetRegistry;
@@ -161,10 +163,20 @@ public class ComponentMojoUtil {
 	 * and then adding additional entries for the newly constructed artifacts.
 	 *
 	 */
-	public static void buildArchiveFileForProjectAndClassList(List<CtClass> classList, WidgetRegistry widgetRegistry, GraniteUIWidgetRegistry graniteUIWidgetRegistry,
-		ClassLoader classLoader, ClassPool classPool, File buildDirectory, String componentPathBase,
-		String defaultComponentPathSuffix, String defaultComponentGroup, File existingArchiveFile,
-		File tempArchiveFile, ComponentNameTransformer transformer) throws OutputFailureException, IOException,
+	public static void buildArchiveFileForProjectAndClassList(
+            List<CtClass> classList,
+            WidgetRegistry widgetRegistry,
+            GraniteUIWidgetRegistry graniteUIWidgetRegistry,
+            GraniteUIContainerRegistry graniteUIContainerRegistry,
+		    ClassLoader classLoader,
+            ClassPool classPool,
+            File buildDirectory,
+            String componentPathBase,
+		    String defaultComponentPathSuffix,
+            String defaultComponentGroup,
+            File existingArchiveFile,
+		    File tempArchiveFile,
+            ComponentNameTransformer transformer) throws OutputFailureException, IOException,
             InvalidComponentClassException, InvalidComponentFieldException, ParserConfigurationException,
             TransformerException, ClassNotFoundException, CannotCompileException, NotFoundException, SecurityException,
             NoSuchFieldException, IllegalArgumentException, IllegalAccessException, InvocationTargetException,
@@ -225,6 +237,7 @@ public class ComponentMojoUtil {
                 tempOutputStream,
                 existingArchiveEntryNames,
                 graniteUIWidgetRegistry,
+                graniteUIContainerRegistry,
                 classLoader,
                 classPool,
                 buildDirectory,
@@ -453,7 +466,7 @@ public class ComponentMojoUtil {
 
             Class<? extends Annotation> annotationClass = widgetAnnotation.annotationClass();
 
-            Class<? extends WidgetMaker> makerClass = widgetAnnotation.makerClass();
+            Class<? extends GraniteUIWidgetMaker> makerClass = widgetAnnotation.makerClass();
             Class<? extends AbstractGraniteUIWidget> widgetClass = classLoader.loadClass(clazz.getName()).asSubclass(
                     AbstractGraniteUIWidget.class);
             GraniteUIWidgetConfigHolder widgetConfig = new GraniteUIWidgetConfigHolder(annotationClass, widgetClass, makerClass,
@@ -478,8 +491,7 @@ public class ComponentMojoUtil {
             Class<? extends GraniteUIContainerMaker> makerClass = containerAnnotation.makerClass();
             Class<? extends AbstractGraniteUIContainer> containerClass = classLoader.loadClass(clazz.getName()).asSubclass(
                     AbstractGraniteUIContainer.class);
-            GraniteUIContainerConfigHolder containerConfig = new GraniteUIContainerConfigHolder(annotationClass, containerClass, makerClass,
-                    containerAnnotation.resourceType());
+            GraniteUIContainerConfigHolder containerConfig = new GraniteUIContainerConfigHolder(annotationClass, containerClass, makerClass);
 
             builtInContainers.add(containerConfig);
 

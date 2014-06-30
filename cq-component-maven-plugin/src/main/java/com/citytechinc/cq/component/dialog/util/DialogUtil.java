@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.citytechinc.cq.component.graniteuidialog.GraniteUIDialog;
+import com.citytechinc.cq.component.graniteuidialog.container.GraniteUIContainerRegistry;
 import com.citytechinc.cq.component.graniteuidialog.exception.GraniteUIDialogCreationException;
 import com.citytechinc.cq.component.graniteuidialog.factory.GraniteUIDialogFactory;
 import com.citytechinc.cq.component.graniteuidialog.widget.GraniteUIWidgetRegistry;
@@ -213,6 +214,7 @@ public class DialogUtil {
             ZipArchiveOutputStream zipOutputStream,
             Set<String> reservedNames,
             GraniteUIWidgetRegistry widgetRegistry,
+            GraniteUIContainerRegistry containerRegistry,
             ClassLoader classLoader,
             ClassPool classPool,
             File buildDirectory,
@@ -244,7 +246,7 @@ public class DialogUtil {
                 }
                 if (hasDialogFieldOrCQIncludeTab) {
                     ComponentMojoUtil.getLog().debug("Producing GraniteUI Dialog for class " + curClass);
-                    GraniteUIDialog builtDialog = GraniteUIDialogFactory.make(curClass, widgetRegistry, classLoader, classPool);
+                    GraniteUIDialog builtDialog = GraniteUIDialogFactory.make(curClass, widgetRegistry, containerRegistry, classLoader, classPool);
                     dialogList.add(builtDialog);
                     File dialogFile = writeGraniteUIDialogToFile(transformer, builtDialog, curClass, buildDirectory,
                             componentPathBase, defaultComponentPathSuffix);

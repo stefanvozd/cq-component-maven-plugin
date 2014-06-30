@@ -23,7 +23,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.citytechinc.cq.component.graniteuidialog.container.GraniteUIContainerRegistry;
+import com.citytechinc.cq.component.graniteuidialog.container.impl.DefaultGraniteUIContainerRegistry;
 import com.citytechinc.cq.component.graniteuidialog.widget.GraniteUIWidgetRegistry;
+import com.citytechinc.cq.component.graniteuidialog.widget.impl.DefaultGraniteUIWidgetRegistry;
 import javassist.ClassPool;
 import javassist.CtClass;
 
@@ -93,6 +96,7 @@ public class ComponentMojo extends AbstractMojo {
 			WidgetRegistry widgetRegistry = new DefaultWidgetRegistry(classPool, classLoader, reflections);
 
             GraniteUIWidgetRegistry graniteWidgetRegistry = new DefaultGraniteUIWidgetRegistry(classPool, classLoader, reflections);
+            GraniteUIContainerRegistry graniteContainerRegistry = new DefaultGraniteUIContainerRegistry(classPool, classLoader, reflections);
 
 			Map<String, ComponentNameTransformer> transformers = ComponentMojoUtil.getAllTransformers(classPool,
 				reflections);
@@ -103,7 +107,7 @@ public class ComponentMojo extends AbstractMojo {
 				throw new ConfigurationException("The configured transformer wasn't found");
 			}
 
-			ComponentMojoUtil.buildArchiveFileForProjectAndClassList(classList, widgetRegistry, graniteWidgetRegistry, classLoader, classPool,
+			ComponentMojoUtil.buildArchiveFileForProjectAndClassList(classList, widgetRegistry, graniteWidgetRegistry, graniteContainerRegistry, classLoader, classPool,
 				new File(project.getBuild().getDirectory()), componentPathBase, componentPathSuffix,
 				defaultComponentGroup, getArchiveFileForProject(), getTempArchiveFileForProject(), transformer);
 

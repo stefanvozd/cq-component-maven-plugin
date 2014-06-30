@@ -13,20 +13,12 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package com.citytechinc.cq.component.graniteuidialog;
+package com.citytechinc.cq.component.graniteuidialog.maker;
 
-import com.citytechinc.cq.component.xml.XmlElementParameters;
+import com.citytechinc.cq.component.graniteuidialog.GraniteUIElement;
 
-public class GraniteUIResourceTypedElementParameters extends XmlElementParameters {
+public interface GraniteUIWidgetMaker {
 
-    protected String resourceType;
-
-    public String getResourceType() {
-        return resourceType;
-    }
-
-    public void setResourceType(String resourceType) {
-        this.resourceType = resourceType;
-    }
+    public GraniteUIElement make();
 
 }
