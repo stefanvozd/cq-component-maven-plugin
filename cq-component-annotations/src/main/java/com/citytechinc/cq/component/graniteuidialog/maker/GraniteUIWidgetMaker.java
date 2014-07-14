@@ -19,6 +19,6 @@ import com.citytechinc.cq.component.graniteuidialog.GraniteUIElement;
 
 public interface GraniteUIWidgetMaker {
 
-    public GraniteUIElement make();
+    public GraniteUIElement make() throws ClassNotFoundException;
 
 }

@@ -130,4 +130,35 @@ public @interface DialogField {
 	 * @return double
 	 */
 	public double ranking() default 0;
+
+    /**
+     * For use with Granite UI only - the ID of the rendered element representing this field
+     *
+     * @return String
+     */
+    public String id() default "";
+
+    /**
+     * For use with Granite UI only - the class of the rendered element representing this field
+     *
+     * @return String
+     */
+    public String cssClass() default "";
+
+    /**
+     * For use with Granite UI only - indicates whether the read-only variant of the field should be
+     * rendered along with the standard variant
+     *
+     * @return boolean
+     */
+    public boolean renderReadOnly() default false;
+
+    /**
+     * For use with Granite UI only - indicates whether the empty text should be rendered in readonly mode
+     *
+     * @return boolean
+     */
+    public boolean showEmptyInReadOnly() default false;
+
+
 }

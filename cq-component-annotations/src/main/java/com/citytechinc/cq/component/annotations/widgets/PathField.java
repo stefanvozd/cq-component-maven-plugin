@@ -35,6 +35,14 @@ public @interface PathField {
 	public static final String ROOT_TITLE_DEFAULT = "Websites";
 	public static final boolean SHOW_TITLE_IN_TREE_DEFAULT = true;
 
+    /*
+     * Granite Specific Property Defaults
+     */
+    public static final String OPTION_LOADER_DEFAULT = "";
+    public static final String OPTION_LOADER_ROOT_DEFAULT = "";
+    public static final String OPTION_VALUE_READER_DEFAULT = "";
+    public static final String OPTION_TITLE_READER_DEFAULT = "";
+
 	/**
 	 * True to url-encode the ampersand character (&amp;) to %26.
 	 *
@@ -76,4 +84,55 @@ public @interface PathField {
 	 * @return boolean
 	 */
 	boolean showTitleInTree() default SHOW_TITLE_IN_TREE_DEFAULT;
+
+    /*
+     * Granite UI Specific Properties
+     */
+
+    /**
+     * For use with Granite UI only - Indicates whether this field should be treated as disabled
+     *
+     * @return boolean
+     */
+    boolean disabled() default false;
+
+    /**
+     * For use with Granite UI only - The empty text to present when no value is present in this input
+     *
+     * @return boolean
+     */
+    String emptyText() default "";
+
+    /**
+     * For use with Granite UI only - Javascript source code for an option loader callback function.
+     * Takes two arguments: (path, callback). See the default option loader implementation for more details
+     * on how to use this. If not given, a default option loader will be used that just returns paths from the
+     * current repository.
+     *
+     * @return String
+     */
+    String optionLoader() default OPTION_LOADER_DEFAULT;
+
+    /**
+     * For use with Granite UI only --- currently not implemented
+     *
+     * @return String
+     */
+    String optionLoaderRoot() default OPTION_LOADER_ROOT_DEFAULT;
+
+    /**
+     * For use with Granite UI only - Javascript source code for callback function that gets an option value
+     * object as parameter and should return a stringified value for this option.
+     *
+     * @return String
+     */
+    String optionValueReader() default OPTION_VALUE_READER_DEFAULT;
+
+    /**
+     * For use with Granite UI only - Javascript source code for callback function that gets an option value
+     * object as parameter and should return a stringified title for this option.
+     *
+     * @return String
+     */
+    String optionTitleReader() default OPTION_TITLE_READER_DEFAULT;
 }

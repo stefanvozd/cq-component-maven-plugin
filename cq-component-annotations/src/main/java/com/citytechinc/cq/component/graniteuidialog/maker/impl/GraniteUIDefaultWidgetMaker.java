@@ -45,7 +45,7 @@ public class GraniteUIDefaultWidgetMaker extends AbstractGraniteUIWidgetMaker {
         widgetParameters.setFieldName(fieldName);
         widgetParameters.setFieldLabel(fieldLabel);
         widgetParameters.setFieldDescription(fieldDescription);
-        widgetParameters.setAllowBlank(!isRequired);
+        widgetParameters.setRequired(isRequired);
         widgetParameters.setAdditionalProperties(additionalProperties);
         widgetParameters.setDefaultValue(defaultValue);
         widgetParameters.setListeners(getListeners());

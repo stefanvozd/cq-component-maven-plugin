@@ -26,7 +26,7 @@ public class AbstractGraniteUIWidget extends AbstractDialogElement implements Gr
     private final NameSpacedAttribute<String> resourceType;
     private final String fieldLabel;
     private final String fieldDescription;
-    private final boolean allowBlank;
+    private final boolean required;
     private final String defaultValue;
     private String name;
 
@@ -42,7 +42,7 @@ public class AbstractGraniteUIWidget extends AbstractDialogElement implements Gr
         this.resourceType = new NameSpacedAttribute<String>(Constants.SLING_NS_URI, Constants.SLING_NS_PREFIX, parameters.getResourceType());
         this.fieldLabel = parameters.getFieldLabel();
         this.fieldDescription = parameters.getFieldDescription();
-        this.allowBlank = parameters.isAllowBlank();
+        this.required = parameters.isRequired();
         this.defaultValue = parameters.getDefaultValue();
         this.name = parameters.getName();
     }
@@ -84,8 +84,8 @@ public class AbstractGraniteUIWidget extends AbstractDialogElement implements Gr
      * @return Indication of whether the Widget may be left blank in an
      *         authoring Dialog
      */
-    public boolean isAllowBlank() {
-        return allowBlank;
+    public boolean isRequired() {
+        return required;
     }
 
     /**

@@ -23,7 +23,7 @@ public class GraniteUIWidgetParameters extends DialogElementParameters {
 	protected String resourceType;
 	protected String fieldLabel;
 	protected String fieldDescription;
-	protected boolean allowBlank;
+	protected boolean required;
 	protected String defaultValue;
 	protected String name;
 
@@ -51,12 +51,12 @@ public class GraniteUIWidgetParameters extends DialogElementParameters {
 		this.fieldDescription = fieldDescription;
 	}
 
-	public boolean isAllowBlank() {
-		return allowBlank;
+	public boolean isRequired() {
+		return required;
 	}
 
-	public void setAllowBlank(boolean allowBlank) {
-		this.allowBlank = allowBlank;
+	public void setRequired(boolean required) {
+		this.required = required;
 	}
 
 	public String getDefaultValue() {
