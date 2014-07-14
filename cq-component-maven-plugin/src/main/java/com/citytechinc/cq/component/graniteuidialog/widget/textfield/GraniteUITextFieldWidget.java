@@ -15,9 +15,13 @@
  */
 package com.citytechinc.cq.component.graniteuidialog.widget.textfield;
 
+import com.citytechinc.cq.component.annotations.config.GraniteUIWidget;
+import com.citytechinc.cq.component.annotations.widgets.TextField;
+import com.citytechinc.cq.component.graniteuidialog.maker.impl.GraniteUIDefaultWidgetMaker;
 import com.citytechinc.cq.component.graniteuidialog.widget.AbstractGraniteUIWidget;
 import com.citytechinc.cq.component.graniteuidialog.widget.GraniteUIWidgetParameters;
 
+@GraniteUIWidget(annotationClass = TextField.class, makerClass = GraniteUIDefaultWidgetMaker.class, resourceType = GraniteUITextFieldWidget.RESOURCE_TYPE)
 public class GraniteUITextFieldWidget extends AbstractGraniteUIWidget {
 
     public static final String RESOURCE_TYPE = "granite/ui/components/foundation/form/textfield";

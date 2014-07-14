@@ -28,4 +28,32 @@ import java.lang.annotation.Target;
 @Target({ ElementType.FIELD, ElementType.METHOD })
 public @interface TextArea {
 
+    /**
+     * For use with Granite UI Only - Indicates that the rendered field should be disabled
+     *
+     * @return boolean
+     */
+    boolean disabled() default false;
+
+    /**
+     * For use with Granite UI Only - The placeholder text which should be rendered when this field is empty
+     *
+     * @return String
+     */
+    public String emptyText() default "";
+
+    /**
+     * For use with Granite UI Only - The rows to be presented in the text area
+     *
+     * @return long
+     */
+    public long rows() default -1;
+
+    /**
+     * For use with Granite UI only - the cols to be presented in the text area
+     *
+     * @return long
+     */
+    public long cols() default -1;
+
 }
