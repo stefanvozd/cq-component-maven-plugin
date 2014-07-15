@@ -141,6 +141,8 @@ public @interface DialogField {
     /**
      * For use with Granite UI only - the class of the rendered element representing this field
      *
+     * Not yet implemented
+     *
      * @return String
      */
     public String cssClass() default "";

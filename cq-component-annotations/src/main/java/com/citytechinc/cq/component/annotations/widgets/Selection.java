@@ -84,4 +84,39 @@ public @interface Selection {
 	 * @return String
 	 */
 	public String type() default RADIO;
+
+    /**
+     * Only applicable for Granite UI Dialogs
+     *
+     * Indicates that multiple options may be selected
+     *
+     * @return boolean
+     */
+    public boolean multiple() default false;
+
+    /**
+     * Only applicable for Granite UI Dialogs
+     *
+     * Indicates that the field is disabled
+     *
+     * @return boolean
+     */
+    public boolean disabled() default false;
+
+    /**
+     * Only applicable for Granite UI Dialogs
+     *
+     * @return boolean
+     */
+    public boolean translateOptions() default true;
+
+    /**
+     * Only applicable for Granite UI Dialogs
+     *
+     * Text to present when no option has been chosen
+     *
+     * @return String
+     */
+    public String emptyText() default "";
+
 }

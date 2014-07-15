@@ -48,4 +48,25 @@ public @interface Option {
 	 */
 	String qtip() default "";
 
+    /**
+     * Used for Granite UI only
+     *
+     * @return String
+     */
+    String title() default "";
+
+    /**
+     * Used for Granite UI only
+     *
+     * @return boolean
+     */
+    boolean disabled() default false;
+
+    /**
+     * Used for Granite UI only
+     *
+     * @return boolean
+     */
+    boolean selected() default false;
+
 }
