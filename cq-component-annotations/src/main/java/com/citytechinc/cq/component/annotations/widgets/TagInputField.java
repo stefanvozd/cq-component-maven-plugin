@@ -30,6 +30,9 @@ import com.citytechinc.cq.component.annotations.TagNameSpace;
 @Target({ ElementType.FIELD, ElementType.METHOD })
 public @interface TagInputField {
 
+    public static final String VALUES_DEFAULT = "granite/ui/components/foundation/form/autocomplete/tags";
+    public static final String OPTIONS_DEFAULT = "granite/ui/components/foundation/form/autocomplete/list";
+
     /**
      * Whether to display tag titles instead of the pure tag IDs in the input field, autocompletion, tree or cloud view.
      *
@@ -43,4 +46,55 @@ public @interface TagInputField {
 	 * @return TagNameSpace[]
 	 */
 	TagNameSpace[] namespaces() default {};
+
+    /**
+     * Applicable to Granite UI dialogs only
+     *
+     * @return boolean
+     */
+    boolean disabled() default false;
+
+    /**
+     * Applicable to Granite UI dialogs only
+     *
+     * @return boolean
+     */
+    String emptyText() default "";
+
+    /**
+     * Applicable to Granite UI dialogs only
+     *
+     * Allow selection of multiple tags
+     *
+     * @return boolean
+     */
+    boolean multiple() default true;
+
+    /**
+     * Applicable to Granite UI dialogs only
+     *
+     * It's a title
+     *
+     * @return String
+     */
+    String title() default "";
+
+    /**
+     * Applicable to Granite UI dialogs only
+     *
+     * The Resource Type to attribute to the values configuration node of the Auto Complete widget rendered as a tag selector
+     *
+     * @return String
+     */
+    String values() default VALUES_DEFAULT;
+
+    /**
+     * Applicable to Granite UI dialogs only
+     *
+     * The Resource Type to attribute to the values configuration node of the Auto Complete widget rendered as a tag selector
+     *
+     * @return String
+     */
+    String options() default OPTIONS_DEFAULT;
+
 }

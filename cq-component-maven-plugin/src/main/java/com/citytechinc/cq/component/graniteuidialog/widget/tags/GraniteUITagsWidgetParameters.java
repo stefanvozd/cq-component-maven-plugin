@@ -13,24 +13,11 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package com.citytechinc.cq.component.dialog;
+package com.citytechinc.cq.component.graniteuidialog.widget.tags;
 
-import java.util.Comparator;
+import com.citytechinc.cq.component.graniteuidialog.widget.autocomplete.GraniteUIAutoCompleteWidgetParameters;
 
-import com.citytechinc.cq.component.xml.XmlElement;
 
-public class DialogElementComparator implements Comparator<XmlElement> {
-
-	public int compare(XmlElement xe1, XmlElement xe2) {
-
-        if (xe1.getClass().isInstance(DialogElement.class) && xe2.getClass().isInstance(DialogElement.class)) {
-            DialogElement de1 = (DialogElement) xe1;
-            DialogElement de2 = (DialogElement) xe2;
-            return Double.compare(de1.getRanking(), de2.getRanking());
-        }
-
-        return 0;
-
-	}
+public class GraniteUITagsWidgetParameters extends GraniteUIAutoCompleteWidgetParameters {
 
 }
