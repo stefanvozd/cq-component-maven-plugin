@@ -110,4 +110,120 @@ public @interface Html5SmartFile {
 	 * @return int
 	 */
 	public int sizeLimit() default 0;
+
+    /**
+     * Applicable to Granite UI Widgets only
+     *
+     * A title
+     *
+     * @return String
+     */
+    public String title() default "";
+
+    /**
+     * Applicable to Granite UI Widgets only
+     *
+     * The text of the button
+     *
+     * @return String
+     */
+    public String text() default "";
+
+    /**
+     * Applicable to Granite UI Widgets only
+     *
+     * The icon of the button
+     *
+     * @return String
+     */
+    public String icon() default "";
+
+    /**
+     * Applicable to Granite UI Widgets only
+     *
+     * The variant of the button: "secondary", "quiet"
+     *
+     * @return String[]
+     */
+    public String[] variant() default {};
+
+    /**
+     * Applicable to Granite UI Widgets only
+     *
+     * Indicates whether multiple files may be uploaded
+     *
+     * @return Boolean
+     */
+    public boolean multiple() default false;
+
+    /**
+     * Applicable to Granite UI Widgets only
+     *
+     * @return Boolean
+     */
+    public boolean disabled() default false;
+
+    /**
+     * Applicable to Granite UI Widgets only
+     *
+     * Placeholder attr for the underlying form field
+     *
+     * @return String
+     */
+    public String placeholder() default "";
+
+    /**
+     * Applicable to Granite UI Widgets only
+     *
+     * Same as placeholder
+     *
+     * @return String
+     */
+    public String emptyText() default "";
+
+    /**
+     * Applicable to Granite UI Widgets only
+     *
+     * URL where to upload the file, you can use <code>${suffix.path}</code>
+     *
+     * @return String
+     */
+    public String uploadUrl() default "${suffix.path}";
+
+    /**
+     * Applicable to Granite UI Widgets only
+     *
+     * Upload URL builder
+     *
+     * @return String
+     */
+    public String uploadUrlBuilder() default "";
+
+    /**
+     * Applicable to Granite UI Widgets only
+     *
+     * If <code>true</code>, upload starts automatically once the file is selected
+     *
+     * @return Boolean
+     */
+    public boolean autoStart() default false;
+
+    /**
+     * Applicable to Granite UI Widgets only
+     *
+     * Prefer HTML5 to upload files (if browser allows it)
+     *
+     * @return Boolean
+     */
+    public boolean useHTML5() default true;
+
+    /**
+     * Applicable to Granite UI Widgets only
+     *
+     * Drop zone selector to upload files from file system directly (if browser allows it)
+     *
+     * @return String
+     */
+    public String dropZone() default "";
+
 }
