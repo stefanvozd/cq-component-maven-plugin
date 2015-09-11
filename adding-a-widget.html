@@ -98,7 +98,14 @@
 
 
 	
-		</header>
+			<div>
+			<ul class="breadcrumb">
+				<li class="projectVersion version-date">Version: 4.0.0</li>
+				<li class="divider">|</li>
+				<li class="publishDate version-date">Last Published: 2015-09-11</li>
+			</ul>
+		</div>
+	</header>
 
 	<div class="main-body">
 	<div class="row">
@@ -108,13 +115,14 @@
  <div class="page-header">
   <h2 id="Adding_a_Widget">Adding a Widget</h2>
  </div> 
- <p>Custom xtypes and custom construction of dialog widgets for existing xtypes is supported via the Custom Widget extension mechanism. When the CQ Component Plugin determines a particular field or element is to be output as a particular type of Widget, a <a href="apidocs/com/citytechinc/cq/component/dialog/maker/WidgetMaker.html">WidgetMaker</a> for the Widget type is invoked and its <tt>make</tt> method is passed an instance of the <a href="apidocs/com/citytechinc/cq/component/dialog/widget/WidgetParameters.html">WidgetParameters</a> class. The object which is the result of this method call is an instance of a subclass of <a href="apidocs/com/citytechinc/cq/component/dialog/AbstractWidget.html">AbstractWidget</a> and represents the widget which will be written to the dialog.xml during output. Using the Custom Widget extension mechanism involves:</p> 
+ <p>Custom xtypes or resourceTypes and custom construction of dialog widgets for existing xtypes or resourceTypes is supported via the Custom Widget extension mechanism. Mirror versions of this mechanism exist for the Touch UI and Classic UI.<br />When the CQ Component Plugin determines a particular field or element is to be output as a particular type of Widget, a <a href="apidocs/com/citytechinc/cq/component/dialog/maker/WidgetMaker.html">WidgetMaker</a> for the Classic UI or a <a href="apidocs/com/citytechinc/cq/component/touchuidialog/widget/maker/TouchUIWidgetMaker.html">TouchUIWidgetMaker</a> for the Touch UI<br />is invoked and its <tt>make</tt> method is passed an instance of the <a href="apidocs/com/citytechinc/cq/component/dialog/widget/WidgetParameters.html">WidgetParameters</a> class for the Classic UI or a <a href="apidocs/com/citytechinc/cq/component/touchuidialog/widget/TouchUIWidgetParameters.html">TouchUIWidgetParameters</a> class for the Touch UI.<br />The object which is the result of this method call is an instance of a subclass of <a href="apidocs/com/citytechinc/cq/component/dialog/AbstractWidget.html">AbstractWidget</a> for the Classic UI or <a href="apidocs/com/citytechinc/cq/component/touchuidialog/widget/AbstractTouchUIWidget.html">AbstractTouchUIWidget</a> for the Touch UI<br />and represents the widget which will be written to the dialog.xml for the Classic UI or _cq_dialog.xml for the Touch UI during output.<br />Using the Custom Widget extension mechanism involves:</p> 
  <ul> 
-  <li>Creating an extension of <a href="apidocs/com/citytechinc/cq/component/dialog/widget/WidgetParameters.html">WidgetParameters</a> if parameters not included in this base class need to be represented during the construction of your widget.</li> 
-  <li>Creating a Widget Maker implementing the <a href="apidocs/com/citytechinc/cq/component/dialog/maker/WidgetMaker.html">WidgetMaker</a> interface which will construct your widget.</li> 
+  <li>Determining whether Touch UI, Classic UI, or both are to be supported by your widget. There is no systematic requirement to support both so this will be solely driven by your authoring requirements.</li> 
+  <li>Creating an extension of <a href="apidocs/com/citytechinc/cq/component/dialog/widget/WidgetParameters.html">WidgetParameters</a> for the Classic UI or <a href="apidocs/com/citytechinc/cq/component/touchuidialog/widget/TouchUIWidgetParameters.html">TouchUIWidgetParameters</a> for the Touch UI if parameters not included in this base class need to be represented during the construction of your widget.</li> 
+  <li>Creating a Widget Maker implementing the <a href="apidocs/com/citytechinc/cq/component/dialog/maker/WidgetMaker.html">WidgetMaker</a> for the Classic UI or <a href="apidocs/com/citytechinc/cq/component/touchuidialog/widget/maker/TouchUIWidgetMaker.html">TouchUIWidgetMaker</a> for the Touch UI interface which will construct your widget.</li> 
   <li>Defining a stackable Annotation which will be used to indicate that a field or method of a component Class is to be represented using your custom widget.</li> 
-  <li>Defining a subclass of <a href="apidocs/com/citytechinc/cq/component/dialog/AbstractWidget.html">AbstractWidget</a> which will represent your custom widget.</li> 
-  <li>Annotating your custom widget class with the <a href="apidocs/com/citytechinc/cq/component/annotations/config/Widget.html">Widget</a> Annotation.</li> 
+  <li>Defining a subclass of <a href="apidocs/com/citytechinc/cq/component/dialog/AbstractWidget.html">AbstractWidget</a> for the Classic UI or <a href="apidocs/com/citytechinc/cq/component/touchuidialog/widget/AbstractTouchUIWidget.html">AbstractTouchUIWidget</a> for the Touch UI which will represent your custom widget.</li> 
+  <li>Annotating your custom widget class with the <a href="apidocs/com/citytechinc/cq/component/annotations/config/Widget.html">Widget</a> Annotation for the Classic UI or <a href="apidocs/com/citytechinc/cq/component/annotations/config/TouchUIWidget.html">TouchUIWidget</a> Annotation for the Touch UI.</li> 
  </ul> 
  <div class="section"> 
   <h3 id="Extending_WidgetParameters">Extending WidgetParameters</h3> 
@@ -151,10 +159,66 @@ public class CheckBoxWidgetParameters extends WidgetParameters {
   </div> 
  </div> 
  <div class="section"> 
-  <h3 id="Adding_the_Widget_Class">Adding the Widget Class</h3> 
+  <h3 id="Extending_TouchUIWidgetParameters">Extending TouchUIWidgetParameters</h3> 
+  <p>The purpose of <a href="apidocs/com/citytechinc/cq/component/touchuidialog/widget/TouchUIWidgetParameters.html">TouchUIWidgetParameters</a> is the same as that of <a href="apidocs/com/citytechinc/cq/component/dialog/widget/WidgetParameters.html">WidgetParameters</a> but for the rendering of Touch UI widgets.</p> 
+  <div class="section"> 
+   <h4 id="TouchUIWidgetParameters_Example">TouchUIWidgetParameters Example</h4> 
+   <p><i>(For CQ.Ext.form.Checkbox):</i></p> 
+   <div class="source"> 
+    <pre>import com.citytechinc.cq.component.touchuidialog.widget.DefaultTouchUIWidgetParameters;
+
+public class CheckboxWidgetParameters extends DefaultTouchUIWidgetParameters {
+
+    private String text;
+    private String title;
+    private boolean checked;
+
+    public String getText() {
+       return text;
+    }
+
+    public void setText(String text) {
+       this.text = text;
+    }
+
+    @Override
+    public String getTitle() {
+       return title;
+    }
+
+    @Override
+    public void setTitle(String title) {
+       this.title = title;
+    }
+
+    public boolean isChecked() {
+       return checked;
+    }
+
+    public void setChecked(boolean checked) {
+       this.checked = checked;
+    }
+
+    @Override
+    public String getResourceType() {
+       return CheckboxWidget.RESOURCE_TYPE;
+    }
+
+    @Override
+    public void setResourceType(String resourceType) {
+       throw new UnsupportedOperationException(&quot;resourceType is Static for CheckboxWidget&quot;);
+    }
+
+}
+</pre> 
+   </div> 
+  </div> 
+ </div> 
+ <div class="section"> 
+  <h3 id="Adding_the_Classic_UI_Widget_Class">Adding the Classic UI Widget Class</h3> 
   <p>The abstract class <a href="apidocs/com/citytechinc/cq/component/dialog/AbstractWidget.html">AbstractWidget</a> is used as a superclass for all widgets and builds the core component properties based on the WidgetParameters object passed in. This class must be extended and all additional fields which are needed in the dialog.xml must be exposed via getter methods on the extending class.</p> 
   <div class="section"> 
-   <h4 id="Widget_Class_Example">Widget Class Example</h4> 
+   <h4 id="Classic_UI_Widget_Class_Example">Classic UI Widget Class Example</h4> 
    <p><i>(For CQ.Ext.form.Checkbox):</i></p> 
    <div class="source"> 
     <pre>import com.citytechinc.cq.component.dialog.AbstractWidget;
@@ -183,7 +247,52 @@ public class CheckBoxWidget extends AbstractWidget {
   </div> 
  </div> 
  <div class="section"> 
-  <h3 id="Adding_the_Stackable_Annotation">Adding the Stackable Annotation</h3> 
+  <h3 id="Adding_the_Touch_UI_Widget_Class">Adding the Touch UI Widget Class</h3> 
+  <p>Similar to <a href="apidocs/com/citytechinc/cq/component/dialog/AbstractWidget.html">AbstractWidget</a> the <a href="apidocs/com/citytechinc/cq/component/touchuidialog/widget/AbstractTouchUIWidget.html">AbstractTouchUIWidget</a><br />class is used as a superclass for all Touch UI widgets. This class must be extended and all additional fields which are needed in the _cq_dialog.xml must be exposed via getter methods on the extending class.</p> 
+  <div class="section"> 
+   <h4 id="Touch_UI_Widget_Class_Example">Touch UI Widget Class Example</h4> 
+   <p><i>(For CQ.Ext.form.Checkbox):</i></p> 
+   <div class="source"> 
+    <pre>import com.citytechinc.cq.component.annotations.config.TouchUIWidget;
+import com.citytechinc.cq.component.annotations.widgets.CheckBox;
+import com.citytechinc.cq.component.touchuidialog.widget.AbstractTouchUIWidget;
+
+public class CheckboxWidget extends AbstractTouchUIWidget {
+
+    public static final String RESOURCE_TYPE = &quot;granite/ui/components/foundation/form/checkbox&quot;;
+
+    private final String text;
+    private final String title;
+    private final boolean checked;
+
+    public CheckboxWidget(CheckboxWidgetParameters parameters) {
+       super(parameters);
+
+       text = parameters.getText();
+       title = parameters.getTitle();
+       checked = parameters.isChecked();
+
+    }
+
+    public String getText() {
+       return text;
+    }
+
+    public String getTitle() {
+       return title;
+    }
+
+    public boolean isChecked() {
+       return checked;
+    }
+
+}
+</pre> 
+   </div> 
+  </div> 
+ </div> 
+ <div class="section"> 
+  <h3 id="Adding_the_Stackable_Annotation_for_the_Classic_UI_andor_the_Touch_UI">Adding the Stackable Annotation for the Classic UI and/or the Touch UI</h3> 
   <p>The widget associated with a field or method annotated with the <a href="apidocs/com/citytechinc/cq/component/annotations/DialogField.html">@DialogField</a> annotation may be further classified as using the custom Widget by applying a stacked annotation alongside the @DialogField annotation. When defining a custom Widget a new stackable annotation is needed in order to indicate to the plugin when to use the custom Widget.</p> 
   <div class="section"> 
    <h4 id="Stackable_Annotation_Example">Stackable Annotation Example</h4> 
@@ -199,11 +308,11 @@ public class CheckBoxWidget extends AbstractWidget {
   </div> 
  </div> 
  <div class="section"> 
-  <h3 id="Adding_a_Maker">Adding a Maker</h3> 
+  <h3 id="Adding_a_Maker_for_the_Classic_UI">Adding a Maker for the Classic UI</h3> 
   <p>The next step is to add a maker class that extends <a href="apidocs/com/citytechinc/cq/component/dialog/maker/AbstractWidgetMaker.html">AbstractWidgetMaker</a>. This class provides some utility methods to get the field name, field label, and other commonly used parameters. It also provides access to all the annotations that are on the field/method by using the getAnnotation method.</p> 
   <p>When extending AbstractWidgetMaker, the <tt>make</tt> method must be implemented and must return the build widget class.</p> 
   <div class="section"> 
-   <h4 id="Widget_Maker_Example">Widget Maker Example</h4> 
+   <h4 id="Classic_UI_Widget_Maker_Example">Classic UI Widget Maker Example</h4> 
    <p><i>(For CQ.Ext.form.Checkbox):</i></p> 
    <div class="source"> 
     <pre>import java.util.Map;
@@ -269,10 +378,72 @@ public class CheckBoxWidgetMaker extends AbstractWidgetMaker {
   </div> 
  </div> 
  <div class="section"> 
-  <h3 id="Adding_the_Widget_Annotation">Adding the Widget Annotation</h3> 
-  <p>Widget definitions are found by the plugin by scanning all dependencies for the <a href="apidocs/com/citytechinc/cq/component/annotations/config/Widget.html">Widget</a> annotation. As such, this annotation must be added to any custom Widget to make the Widget definition accessible to the plugin. This annotation explicitly defines the link between the custom Widget annotation, the custom Widget Maker, and the output xtype, associating all three with the annotated Widget.</p> 
+  <h3 id="Adding_a_Maker_for_the_Touch_UI">Adding a Maker for the Touch UI</h3> 
+  <p>Conceptually similar to the steps for Classic UI the widget maker for the Touch UI will extend <a href="apidocs/com/citytechinc/cq/component/touchuidialog/widget/maker/AbstractTouchUIWidgetMaker.html">AbstractTouchUIWidgetMaker</a>.</p> 
   <div class="section"> 
-   <h4 id="Widget_Annotation_Example">Widget Annotation Example</h4> 
+   <h4 id="Touch_UI_Widget_Maker_Example">Touch UI Widget Maker Example</h4> 
+   <div class="source"> 
+    <pre>import org.codehaus.plexus.util.StringUtils;
+import com.citytechinc.cq.component.annotations.widgets.CheckBox;
+import com.citytechinc.cq.component.dialog.exception.InvalidComponentFieldException;
+import com.citytechinc.cq.component.touchuidialog.TouchUIDialogElement;
+import com.citytechinc.cq.component.touchuidialog.exceptions.TouchUIDialogGenerationException;
+import com.citytechinc.cq.component.touchuidialog.widget.maker.AbstractTouchUIWidgetMaker;
+import com.citytechinc.cq.component.touchuidialog.widget.maker.TouchUIWidgetMakerParameters;
+
+public class CheckboxWidgetMaker extends AbstractTouchUIWidgetMaker&lt;CheckboxWidgetParameters&gt; {
+
+    public CheckboxWidgetMaker(TouchUIWidgetMakerParameters parameters) {
+       super(parameters);
+    }
+
+    @Override
+    public TouchUIDialogElement make(CheckboxWidgetParameters widgetParameters) throws ClassNotFoundException,
+       InvalidComponentFieldException, TouchUIDialogGenerationException {
+
+       CheckBox checkboxAnnotation = getAnnotation(CheckBox.class);
+
+       widgetParameters.setText(getTextForField(checkboxAnnotation));
+       widgetParameters.setTitle(getTitleForField(checkboxAnnotation));
+       widgetParameters.setChecked(getCheckedForField(checkboxAnnotation));
+
+       return new CheckboxWidget(widgetParameters);
+    }
+
+    public String getTextForField(CheckBox annotation) {
+       if (annotation != null &amp;&amp; StringUtils.isNotBlank(annotation.text())) {
+         return annotation.text();
+       }
+
+       return null;
+    }
+
+    public String getTitleForField(CheckBox annotation) {
+       if (annotation != null &amp;&amp; StringUtils.isNotBlank(annotation.title())) {
+         return annotation.title();
+       }
+
+       return null;
+    }
+
+    public boolean getCheckedForField(CheckBox annotation) {
+       if (annotation != null) {
+         return annotation.checked();
+       }
+
+       return false;
+    }
+
+}
+</pre> 
+   </div> 
+  </div> 
+ </div> 
+ <div class="section"> 
+  <h3 id="Adding_the_Widget_Annotation_for_the_Classic_UI">Adding the Widget Annotation for the Classic UI</h3> 
+  <p>Classic UI Widget definitions are found by the plugin by scanning all dependencies for the <a href="apidocs/com/citytechinc/cq/component/annotations/config/Widget.html">Widget</a> annotation. As such, this annotation must be added to any custom Widget to make the Widget definition accessible to the plugin. This annotation explicitly defines the link between the custom Widget annotation, the custom Widget Maker, and the output xtype, associating all three with the annotated Widget.</p> 
+  <div class="section"> 
+   <h4 id="Classic_UI_Widget_Annotation_Example">Classic UI Widget Annotation Example</h4> 
    <p><i>(For CQ.Ext.form.Checkbox):</i></p> 
    <div class="source"> 
     <pre>...
@@ -283,6 +454,28 @@ public class CheckBoxWidget extends AbstractWidget {
 
     private final String inputValue;
     ...
+}
+</pre> 
+   </div> 
+  </div> 
+ </div> 
+ <div class="section"> 
+  <h3 id="Adding_the_TouchUIWidget_Annotation_for_the_Touch_UI">Adding the TouchUIWidget Annotation for the Touch UI</h3> 
+  <p>Touch UI Widget definitions are found by the plugin by scanning all dependencies for the <a href="apidocs/com/citytechinc/cq/component/annotations/config/TouchUIWidget.html">TouchUIWidget</a><br />annotation. This annotation explicitly defines the link between the custom Widget annotation, the custom Widget Maker, and the output resourceType, associating all three with the annotated Widget.</p> 
+  <div class="section"> 
+   <h4 id="TouchUIWidget_Annotation_Example">TouchUIWidget Annotation Example</h4> 
+   <p><i>(For CQ.Ext.form.Checkbox):</i></p> 
+   <div class="source"> 
+    <pre>import com.citytechinc.cq.component.annotations.config.TouchUIWidget;
+import com.citytechinc.cq.component.annotations.widgets.CheckBox;
+import com.citytechinc.cq.component.touchuidialog.widget.AbstractTouchUIWidget;
+
+@TouchUIWidget(annotationClass = CheckBox.class, makerClass = CheckboxWidgetMaker.class,
+    resourceType = CheckboxWidget.RESOURCE_TYPE)
+public class CheckboxWidget extends AbstractTouchUIWidget {
+
+    ...
+
 }
 </pre> 
    </div> 
@@ -304,27 +497,51 @@ public class CheckBoxWidget extends AbstractWidget {
 				<li class="divider"></li>
 			</ul>
 		</li>
-		<li class="dropdown"><a href="#Adding_the_Widget_Class" title="Adding the Widget Class">Adding the Widget Class <b class="caret"></b></a>
+		<li class="dropdown"><a href="#Extending_TouchUIWidgetParameters" title="Extending TouchUIWidgetParameters">Extending TouchUIWidgetParameters <b class="caret"></b></a>
 			<ul class="nav nav-list">
-		<li><a href="#Widget_Class_Example" title="Widget Class Example">Widget Class Example</a>
+		<li><a href="#TouchUIWidgetParameters_Example" title="TouchUIWidgetParameters Example">TouchUIWidgetParameters Example</a>
 				<li class="divider"></li>
 			</ul>
 		</li>
-		<li class="dropdown"><a href="#Adding_the_Stackable_Annotation" title="Adding the Stackable Annotation">Adding the Stackable Annotation <b class="caret"></b></a>
+		<li class="dropdown"><a href="#Adding_the_Classic_UI_Widget_Class" title="Adding the Classic UI Widget Class">Adding the Classic UI Widget Class <b class="caret"></b></a>
+			<ul class="nav nav-list">
+		<li><a href="#Classic_UI_Widget_Class_Example" title="Classic UI Widget Class Example">Classic UI Widget Class Example</a>
+				<li class="divider"></li>
+			</ul>
+		</li>
+		<li class="dropdown"><a href="#Adding_the_Touch_UI_Widget_Class" title="Adding the Touch UI Widget Class">Adding the Touch UI Widget Class <b class="caret"></b></a>
+			<ul class="nav nav-list">
+		<li><a href="#Touch_UI_Widget_Class_Example" title="Touch UI Widget Class Example">Touch UI Widget Class Example</a>
+				<li class="divider"></li>
+			</ul>
+		</li>
+		<li class="dropdown"><a href="#Adding_the_Stackable_Annotation_for_the_Classic_UI_andor_the_Touch_UI" title="Adding the Stackable Annotation for the Classic UI and/or the Touch UI">Adding the Stackable Annotation for the Classic UI and/or the Touch UI <b class="caret"></b></a>
 			<ul class="nav nav-list">
 		<li><a href="#Stackable_Annotation_Example" title="Stackable Annotation Example">Stackable Annotation Example</a>
 				<li class="divider"></li>
 			</ul>
 		</li>
-		<li class="dropdown"><a href="#Adding_a_Maker" title="Adding a Maker">Adding a Maker <b class="caret"></b></a>
+		<li class="dropdown"><a href="#Adding_a_Maker_for_the_Classic_UI" title="Adding a Maker for the Classic UI">Adding a Maker for the Classic UI <b class="caret"></b></a>
 			<ul class="nav nav-list">
-		<li><a href="#Widget_Maker_Example" title="Widget Maker Example">Widget Maker Example</a>
+		<li><a href="#Classic_UI_Widget_Maker_Example" title="Classic UI Widget Maker Example">Classic UI Widget Maker Example</a>
 				<li class="divider"></li>
 			</ul>
 		</li>
-		<li class="dropdown"><a href="#Adding_the_Widget_Annotation" title="Adding the Widget Annotation">Adding the Widget Annotation <b class="caret"></b></a>
+		<li class="dropdown"><a href="#Adding_a_Maker_for_the_Touch_UI" title="Adding a Maker for the Touch UI">Adding a Maker for the Touch UI <b class="caret"></b></a>
 			<ul class="nav nav-list">
-		<li><a href="#Widget_Annotation_Example" title="Widget Annotation Example">Widget Annotation Example</a>
+		<li><a href="#Touch_UI_Widget_Maker_Example" title="Touch UI Widget Maker Example">Touch UI Widget Maker Example</a>
+				<li class="divider"></li>
+			</ul>
+		</li>
+		<li class="dropdown"><a href="#Adding_the_Widget_Annotation_for_the_Classic_UI" title="Adding the Widget Annotation for the Classic UI">Adding the Widget Annotation for the Classic UI <b class="caret"></b></a>
+			<ul class="nav nav-list">
+		<li><a href="#Classic_UI_Widget_Annotation_Example" title="Classic UI Widget Annotation Example">Classic UI Widget Annotation Example</a>
+				<li class="divider"></li>
+			</ul>
+		</li>
+		<li class="dropdown"><a href="#Adding_the_TouchUIWidget_Annotation_for_the_Touch_UI" title="Adding the TouchUIWidget Annotation for the Touch UI">Adding the TouchUIWidget Annotation for the Touch UI <b class="caret"></b></a>
+			<ul class="nav nav-list">
+		<li><a href="#TouchUIWidget_Annotation_Example" title="TouchUIWidget Annotation Example">TouchUIWidget Annotation Example</a>
 				<li class="divider"></li>
 			</ul>
 		</li>
@@ -349,9 +566,6 @@ public class CheckBoxWidget extends AbstractWidget {
 						<li class="nav-header">Main</li>
 						<li>
 							<a href="index.html" title="Home">Home </a>
-						</li>
-						<li>
-							<a href="blogs.html" title="Blogs">Blogs </a>
 						</li>
 						<li>
 							<a href="https://github.com/Citytechinc/cq-component-maven-plugin/" title="GitHub" class="externalLink">GitHub </a>
@@ -394,8 +608,7 @@ public class CheckBoxWidget extends AbstractWidget {
 		<div class="row">
 			<div class="span12">
 				<p class="pull-right"><a href="#">Back to top</a></p>
-				<p class="copyright">Copyright &copy;2014 <a href="http://www.citytechinc.com">CITYTECH, Inc.</a>. All Rights Reserved.</p>
-				<p class="version-date"><span class="projectVersion">Version: 2.6.1. </span><span class="publishDate">Last Published: 2014-06-16. </span></p>
+				<p class="copyright">Copyright &copy;2015 <a href="http://www.citytechinc.com">CITYTECH, Inc.</a>. All Rights Reserved.</p>
 					</div>
 		</div>
 	</div>
