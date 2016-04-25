@@ -28,14 +28,14 @@ public class DialogFieldSetWidgetParameters extends DefaultTouchUIWidgetParamete
 
 	protected List<TouchUIDialogElement> items;
 
-	protected String text;
+	protected String jcrTitle;
 
-	public String getText() {
-		return text;
+	public String getJcrTitle() {
+		return jcrTitle;
 	}
 
-	public void setText(String text) {
-		this.text = text;
+	public void setJcrTitle(String jcrTitle) {
+		this.jcrTitle = jcrTitle;
 	}
 
 	public void addItem(TouchUIDialogElement item) {

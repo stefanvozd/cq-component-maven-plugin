@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.citytechinc.cq.component.maven.util.LogSingleton;
 import javassist.CtMember;
 import javassist.CtMethod;
 import javassist.NotFoundException;
@@ -57,7 +58,7 @@ public class DialogFieldSetWidgetMaker extends AbstractTouchUIWidgetMaker<Dialog
 		widgetParameters.setName(null);
 		widgetParameters.setRequired(true);
 
-		widgetParameters.setText(getFieldLabelForField());
+		widgetParameters.setJcrTitle(getJcrTitleForField(dialogFieldSetAnnotation));
 
 		try {
 			widgetParameters.setItems(buildLayoutItems(dialogFieldSetAnnotation));
@@ -101,20 +102,6 @@ public class DialogFieldSetWidgetMaker extends AbstractTouchUIWidgetMaker<Dialog
 				}
 
 				if (dialogFieldConfig != null && !dialogFieldConfig.isSuppressTouchUI()) {
-					if (StringUtils.isNotBlank(dialogFieldSetAnnotation.namePrefix())) {
-						String name = dialogFieldConfig.getName();
-						String newName;
-						if (name.startsWith("./")) {
-							newName = name.substring(2);
-						} else {
-							newName = name;
-						}
-						newName = dialogFieldSetAnnotation.namePrefix() + newName;
-						if (name.startsWith("./")) {
-							newName = "./" + newName;
-						}
-						dialogFieldConfig.setName(newName);
-					}
 
 					TouchUIWidgetMakerParameters curFieldMember = new TouchUIWidgetMakerParameters();
 					Class<?> fieldClass = parameters.getClassLoader().loadClass(member.getDeclaringClass().getName());
@@ -129,6 +116,28 @@ public class DialogFieldSetWidgetMaker extends AbstractTouchUIWidgetMaker<Dialog
 					
 					if (currentDialogElement != null) {
 						currentDialogElement.setRanking(dialogFieldConfig.getRanking());
+
+						if (currentDialogElement instanceof AbstractTouchUIWidget && StringUtils.isNotBlank(dialogFieldSetAnnotation.namePrefix())) {
+							AbstractTouchUIWidget widget = (AbstractTouchUIWidget) currentDialogElement;
+
+							String name = widget.getName();
+							String newName;
+							if (name.startsWith("./")) {
+								newName = name.substring(2);
+							} else {
+								newName = name;
+							}
+							newName = dialogFieldSetAnnotation.namePrefix() + newName;
+							if (name.startsWith("./")) {
+								newName = "./" + newName;
+							}
+							widget.setName(newName);
+							LogSingleton.getInstance().warn("Dialog Field Set - original name " + name);
+							LogSingleton.getInstance().warn("Dialog Field Set - prefix " + dialogFieldSetAnnotation.namePrefix());
+							LogSingleton.getInstance().warn("Dialog Field Set - new name " + newName);
+
+						}
+
 						elements.add(currentDialogElement);
 					}
 				}
@@ -138,5 +147,13 @@ public class DialogFieldSetWidgetMaker extends AbstractTouchUIWidgetMaker<Dialog
 		Collections.sort(elements, new TouchUIDialogElementComparator());
 
 		return elements;
+	}
+
+	protected String getJcrTitleForField(DialogFieldSet annotation) {
+		if (StringUtils.isNotBlank(annotation.title())) {
+			return annotation.title();
+		}
+
+		return null;
 	}
 }
