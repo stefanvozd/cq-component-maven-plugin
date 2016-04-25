@@ -132,10 +132,6 @@ public class DialogFieldSetWidgetMaker extends AbstractTouchUIWidgetMaker<Dialog
 								newName = "./" + newName;
 							}
 							widget.setName(newName);
-							LogSingleton.getInstance().warn("Dialog Field Set - original name " + name);
-							LogSingleton.getInstance().warn("Dialog Field Set - prefix " + dialogFieldSetAnnotation.namePrefix());
-							LogSingleton.getInstance().warn("Dialog Field Set - new name " + newName);
-
 						}
 
 						elements.add(currentDialogElement);
