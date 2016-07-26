@@ -73,6 +73,7 @@ com.citytechinc.cq.component.touchuidialog.widget.datetime
 com.citytechinc.cq.component.touchuidialog.widget.dialogfieldset
 com.citytechinc.cq.component.touchuidialog.widget.factory
 com.citytechinc.cq.component.touchuidialog.widget.fileupload
+com.citytechinc.cq.component.touchuidialog.widget.hidden
 com.citytechinc.cq.component.touchuidialog.widget.maker
 com.citytechinc.cq.component.touchuidialog.widget.multifield
 com.citytechinc.cq.component.touchuidialog.widget.numberfield
@@ -82,10 +83,12 @@ com.citytechinc.cq.component.touchuidialog.widget.registry
 com.citytechinc.cq.component.touchuidialog.widget.richtexteditor
 com.citytechinc.cq.component.touchuidialog.widget.selection
 com.citytechinc.cq.component.touchuidialog.widget.selection.options
+com.citytechinc.cq.component.touchuidialog.widget.sizefield
 com.citytechinc.cq.component.touchuidialog.widget.smartimage
 com.citytechinc.cq.component.touchuidialog.widget.switchwidget
 com.citytechinc.cq.component.touchuidialog.widget.taginputfield
 com.citytechinc.cq.component.touchuidialog.widget.taginputfield.datasource
+com.citytechinc.cq.component.touchuidialog.widget.tagspicker
 com.citytechinc.cq.component.touchuidialog.widget.textarea
 com.citytechinc.cq.component.touchuidialog.widget.textfield
 com.citytechinc.cq.component.util
